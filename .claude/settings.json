@@ -1,0 +1,16 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ansible-lint:*)",
+      "Bash(yamllint:*)",
+      "Bash(ansible-playbook:*)"
+    ]
+  },
+  "env": {
+    "ANTHROPIC_AUTH_TOKEN": "35de0a48260d4171aee2a2b6a619137d.eoBWpJQk7x9IFaH0",
+    "ANTHROPIC_BASE_URL": "https://api.z.ai/api/anthropic",
+    "ANTHROPIC_DEFAULT_HAIKU_MODEL": "glm-4.6v-flash",
+    "ANTHROPIC_DEFAULT_SONNET_MODEL": "glm-4.6v",
+    "ANTHROPIC_DEFAULT_OPUS_MODEL": "glm-4.7"
+  }
+}

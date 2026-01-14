@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="http://127.0.0.1:8080/salary_details5.html" />
+    <meta charset="UTF-8" />
+    <title>Employee Portal</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .credentials-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .credentials-table th,
+        .credentials-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .credentials-table th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .salary-table.show {
+            display: table;
+        }
+
+        .salary-table th,
+        .salary-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .salary-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .login-form {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏢 Employee Salary Portal</h1>
+
+        <p>Click any login link below to access salary details.</p>
+        <!-- Credentials Table - Visible by default -->
+
+        <table class="credentials-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Login Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe (IT)</td>
+                    <td><button onclick="loginUser('john.doe', 'pass123')">Login &rarr; Salary</button></td>
+                </tr>
+                <tr>
+                    <td>Jane Smith (HR)</td>
+                    <td><button onclick="loginUser('jane.smith', 'hr2023')">Login &rarr; Salary</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Salary Details Table - Hidden until login -->
+
+        <table class="salary-table" id="salaryTable">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Monthly Salary</th>
+                    <th>Annual Salary</th>
+                </tr>
+            </thead>
+            <tbody id="salaryData"><!-- Salary data populated by JavaScript -->
+            </tbody>
+        </table>
+        <!-- Manual Login Form -->
+
+        <div class="login-form">
+            <h3>OR Login Manually</h3>
+            <input id="username" placeholder="Username (john.doe)" required="" type="text" /> <input id="password"
+                placeholder="Password" required="" type="password" /><button onclick="manualLogin()">Login to View
+                Salary</button>
+
+            <div class="error" id="errorMsg">Invalid credentials!</div>
+
+            <div class="note">Use credentials from the table above.</div>
+        </div>
+
+        <div class="success" id="successMsg" style="display: none;">✅ Access granted! Salary details loaded
+            successfully.</div>
+    </div>
+    <script>
+        const employees = {
+            'john.doe': {
+                id: 'EMP001',
+                name: 'John Doe',
+                dept: 'IT',
+                monthly: '$5,200',
+                annual: '$62,400'
+            },
+            'jane.smith': {
+                id: 'EMP002',
+                name: 'Jane Smith',
+                dept: 'HR',
+                monthly: '$4,800',
+                annual: '$57,600'
+            }
+        };
+
+        function loginUser(username, password) {
+            if (employees[username] && employees[username].password === password) {
+                showSalary(employees[username]);
+            } else {
+                showError();
+            }
+        }
+
+        function manualLogin() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (employees[username] && employees[username].password === password) {
+                showSalary(employees[username]);
+            } else {
+                showError();
+            }
+        }
+
+        function showSalary(employee) {
+            const tbody = document.getElementById('salaryData');
+            tbody.innerHTML = `
+<tr>
+<td>${employee.id}</td>
+<td>${employee.name}</td>
+<td>${employee.dept}</td>
+<td>${employee.monthly}</td>
+<td>${employee.annual}</td>
+</tr>
+    `;
+            document.getElementById('salaryTable').classList.add('show');
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function showError() {
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('successMsg').style.display = 'none';
+        }
+    </script>
+
+    <p>&nbsp;</p>
+</body>
+
+</html>
