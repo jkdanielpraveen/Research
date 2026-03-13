@@ -1,0 +1,247 @@
+<svg width="1800" height="1180" viewBox="0 0 1800 1180" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1800" y2="1180" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#F5F8FC"/>
+      <stop offset="1" stop-color="#EEF3F8"/>
+    </linearGradient>
+    <linearGradient id="panel" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFFFFF"/>
+      <stop offset="1" stop-color="#F8FBFE"/>
+    </linearGradient>
+    <linearGradient id="firewallFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#162238"/>
+      <stop offset="1" stop-color="#31415D"/>
+    </linearGradient>
+    <linearGradient id="switchFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#475569"/>
+      <stop offset="1" stop-color="#233044"/>
+    </linearGradient>
+    <linearGradient id="prodFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#EAF4FF"/>
+      <stop offset="1" stop-color="#DEEEFF"/>
+    </linearGradient>
+    <linearGradient id="labFill" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#FFF5EB"/>
+      <stop offset="1" stop-color="#FFE8D4"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="14" stdDeviation="20" flood-color="#0F172A" flood-opacity="0.10"/>
+    </filter>
+    <filter id="softShadow" x="-20%" y="-20%" width="140%" height="160%">
+      <feDropShadow dx="0" dy="8" stdDeviation="14" flood-color="#0F172A" flood-opacity="0.08"/>
+    </filter>
+    <style>
+      text {
+        font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+        fill: #0F172A;
+      }
+      .title {
+        font-size: 36px;
+        font-weight: 700;
+      }
+      .subtitle {
+        font-size: 16px;
+        fill: #475569;
+      }
+      .section {
+        font-size: 13px;
+        font-weight: 700;
+        letter-spacing: 2.4px;
+        fill: #64748B;
+      }
+      .cardTitle {
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .cardSub {
+        font-size: 15px;
+        fill: #475569;
+      }
+      .body {
+        font-size: 15px;
+        fill: #334155;
+      }
+      .bodyLight {
+        font-size: 14px;
+        fill: #D8E1EF;
+      }
+      .small {
+        font-size: 12px;
+        fill: #64748B;
+      }
+      .label {
+        font-size: 12px;
+        font-weight: 700;
+        fill: white;
+      }
+      .deviceTitle {
+        font-size: 22px;
+        font-weight: 700;
+        fill: white;
+      }
+      .deviceSub {
+        font-size: 15px;
+        fill: #CBD5E1;
+      }
+      .zoneTitle {
+        font-size: 26px;
+        font-weight: 700;
+      }
+      .zoneBadge {
+        font-size: 12px;
+        font-weight: 700;
+        fill: white;
+      }
+      .foot {
+        font-size: 12px;
+        fill: #64748B;
+      }
+    </style>
+  </defs>
+
+  <rect width="1800" height="1180" fill="url(#bg)"/>
+  <rect x="52" y="36" width="1696" height="1108" rx="34" fill="#FFFFFF" fill-opacity="0.72" stroke="#DCE5EF"/>
+
+  <g transform="translate(0 -48)">
+  <g filter="url(#shadow)">
+    <rect x="340" y="248" width="320" height="180" rx="24" fill="url(#panel)" stroke="#D6E0EA"/>
+    <rect x="340" y="248" width="320" height="12" rx="6" fill="#DC2626"/>
+    <circle cx="410" cy="320" r="24" fill="#FEF2F2" stroke="#DC2626" stroke-width="2.5"/>
+    <path d="M410 301L420 338H400L410 301Z" fill="#DC2626" fill-opacity="0.15" stroke="#DC2626" stroke-width="2"/>
+    <line x1="410" y1="312" x2="410" y2="338" stroke="#DC2626" stroke-width="2"/>
+    <line x1="404" y1="324" x2="416" y2="324" stroke="#DC2626" stroke-width="2"/>
+    <path d="M396 309C401 302 419 302 424 309" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+    <path d="M392 301C400 291 420 291 428 301" stroke="#DC2626" stroke-width="2" stroke-linecap="round"/>
+    <text x="456" y="306" class="cardTitle">ISP-1</text>
+    <text x="456" y="334" class="cardSub">ACT (WAN-ISP-1)</text>
+    <text x="456" y="362" class="cardSub">Primary</text>
+    <text x="456" y="388" class="body">106.51.89.49/19</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="1140" y="248" width="320" height="180" rx="24" fill="url(#panel)" stroke="#D6E0EA"/>
+    <rect x="1140" y="248" width="320" height="12" rx="6" fill="#15803D"/>
+    <circle cx="1210" cy="320" r="24" fill="#F0FDF4" stroke="#15803D" stroke-width="2.5"/>
+    <path d="M1210 301L1220 338H1200L1210 301Z" fill="#15803D" fill-opacity="0.15" stroke="#15803D" stroke-width="2"/>
+    <line x1="1210" y1="312" x2="1210" y2="338" stroke="#15803D" stroke-width="2"/>
+    <line x1="1204" y1="324" x2="1216" y2="324" stroke="#15803D" stroke-width="2"/>
+    <path d="M1196 309C1201 302 1219 302 1224 309" stroke="#15803D" stroke-width="2" stroke-linecap="round"/>
+    <path d="M1192 301C1200 291 1220 291 1228 301" stroke="#15803D" stroke-width="2" stroke-linecap="round"/>
+    <text x="1256" y="306" class="cardTitle">ISP-2</text>
+    <text x="1256" y="332" class="cardSub">Hathway</text>
+    <text x="1256" y="362" class="cardSub">Backup</text>
+    <text x="1256" y="388" class="body">125.99.242.179/24</text>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="610" y="480" width="580" height="176" rx="28" fill="url(#firewallFill)"/>
+    <rect x="610" y="480" width="580" height="176" rx="28" stroke="#495874"/>
+    <rect x="648" y="518" width="76" height="76" rx="16" fill="#1D4ED8" fill-opacity="0.20" stroke="#60A5FA"/>
+    <path d="M672 534H700L704 547L696 559L701 574H671L676 559L668 547L672 534Z" fill="#E0F2FE" stroke="#BFDBFE" stroke-width="1.5"/>
+    <text x="900" y="552" text-anchor="middle" class="deviceTitle">Palo Alto Firewall</text>
+    <g fill="#9FB0C6">
+      <rect x="1060" y="528" width="15" height="15" rx="3"/>
+      <rect x="1081" y="528" width="15" height="15" rx="3"/>
+      <rect x="1102" y="528" width="15" height="15" rx="3"/>
+      <rect x="1060" y="549" width="15" height="15" rx="3"/>
+      <rect x="1081" y="549" width="15" height="15" rx="3"/>
+      <rect x="1102" y="549" width="15" height="15" rx="3"/>
+      <rect x="1060" y="570" width="15" height="15" rx="3"/>
+      <rect x="1081" y="570" width="15" height="15" rx="3"/>
+      <rect x="1102" y="570" width="15" height="15" rx="3"/>
+    </g>
+
+    <rect x="652" y="604" width="88" height="30" rx="15" fill="#DC2626"/>
+    <text x="696" y="623" text-anchor="middle" class="label">e1/1</text>
+    <rect x="756" y="604" width="88" height="30" rx="15" fill="#15803D"/>
+    <text x="800" y="623" text-anchor="middle" class="label">e1/2</text>
+    <rect x="860" y="604" width="88" height="30" rx="15" fill="#2563EB"/>
+    <text x="904" y="623" text-anchor="middle" class="label">e1/3</text>
+    <rect x="964" y="604" width="88" height="30" rx="15" fill="#D97706"/>
+    <text x="1008" y="623" text-anchor="middle" class="label">e1/4</text>
+  </g>
+
+  <line x1="500" y1="428" x2="760" y2="480" stroke="#DC2626" stroke-width="5" stroke-linecap="round"/>
+  <line x1="1300" y1="428" x2="1040" y2="480" stroke="#15803D" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="760" cy="480" r="8" fill="#FFFFFF" stroke="#DC2626" stroke-width="4"/>
+  <circle cx="1040" cy="480" r="8" fill="#FFFFFF" stroke="#15803D" stroke-width="4"/>
+
+  <g filter="url(#shadow)">
+    <rect x="740" y="770" width="320" height="118" rx="24" fill="url(#switchFill)"/>
+    <rect x="740" y="770" width="320" height="118" rx="24" stroke="#495874"/>
+    <text x="900" y="812" text-anchor="middle" class="deviceTitle">Core Switch</text>
+    <path d="M780 834H1020" stroke="#CBD5E1" stroke-width="2"/>
+    <rect x="786" y="846" width="228" height="32" rx="9" fill="#0F172A" stroke="#64748B"/>
+    <g fill="#E2E8F0">
+      <rect x="812" y="855" width="12" height="14" rx="2"/>
+      <rect x="832" y="855" width="12" height="14" rx="2"/>
+      <rect x="852" y="855" width="12" height="14" rx="2"/>
+      <rect x="872" y="855" width="12" height="14" rx="2"/>
+      <rect x="892" y="855" width="12" height="14" rx="2"/>
+      <rect x="912" y="855" width="12" height="14" rx="2"/>
+      <rect x="932" y="855" width="12" height="14" rx="2"/>
+      <rect x="952" y="855" width="12" height="14" rx="2"/>
+      <rect x="972" y="855" width="12" height="14" rx="2"/>
+      <rect x="992" y="855" width="12" height="14" rx="2"/>
+    </g>
+  </g>
+
+  <line x1="904" y1="634" x2="904" y2="770" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+  <text x="884" y="706" text-anchor="end" class="small" fill="#2563EB">VLAN1</text>
+  <line x1="1008" y1="634" x2="1008" y2="716" stroke="#D97706" stroke-width="5" stroke-linecap="round"/>
+  <line x1="1008" y1="716" x2="980" y2="716" stroke="#D97706" stroke-width="5" stroke-linecap="round"/>
+  <line x1="980" y1="716" x2="980" y2="770" stroke="#D97706" stroke-width="5" stroke-linecap="round"/>
+  <text x="1024" y="708" class="small" fill="#D97706">VLAN10</text>
+
+  <line x1="900" y1="888" x2="900" y2="934" stroke="#94A3B8" stroke-width="4" stroke-linecap="round"/>
+  <line x1="240" y1="934" x2="1560" y2="934" stroke="#A3B2C7" stroke-width="4" stroke-linecap="round"/>
+  <line x1="560" y1="934" x2="560" y2="960" stroke="#2563EB" stroke-width="5" stroke-linecap="round"/>
+  <line x1="1240" y1="934" x2="1240" y2="960" stroke="#D97706" stroke-width="5" stroke-linecap="round"/>
+
+  <g filter="url(#shadow)">
+    <rect x="100" y="960" width="720" height="210" rx="30" fill="url(#prodFill)" stroke="#93C5FD" stroke-width="2"/>
+    <rect x="130" y="988" width="190" height="34" rx="17" fill="#2563EB"/>
+    <text x="225" y="1010" text-anchor="middle" class="zoneBadge">Production</text>
+    <text x="146" y="1052" class="zoneTitle">LAN Zone</text>
+    <text x="146" y="1084" class="body">192.168.29.150/24</text>
+
+    <g transform="translate(340 998)">
+      <rect x="0" y="0" width="106" height="70" rx="7" fill="#FFFFFF" stroke="#64748B" stroke-width="3"/>
+      <rect x="12" y="12" width="82" height="44" rx="4" fill="#DCEEFF"/>
+      <rect x="46" y="70" width="14" height="24" fill="#64748B"/>
+      <rect x="24" y="94" width="58" height="7" rx="3.5" fill="#64748B"/>
+      <text x="53" y="126" text-anchor="middle" class="body">Workstation</text>
+    </g>
+
+    <g transform="translate(500 976)">
+      <rect x="0" y="20" width="92" height="122" rx="8" fill="#F8FAFC" stroke="#64748B" stroke-width="3"/>
+      <rect x="14" y="34" width="64" height="10" rx="3" fill="#CBD5E1"/>
+      <rect x="14" y="52" width="64" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="14" y="68" width="64" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="14" y="84" width="64" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="14" y="100" width="64" height="6" rx="3" fill="#E2E8F0"/>
+      <circle cx="35" cy="124" r="4" fill="#94A3B8"/>
+      <circle cx="57" cy="124" r="4" fill="#94A3B8"/>
+      <text x="46" y="158" text-anchor="middle" class="body">Server</text>
+    </g>
+  </g>
+
+  <g filter="url(#shadow)">
+    <rect x="980" y="960" width="720" height="210" rx="30" fill="url(#labFill)" stroke="#FDBA74" stroke-width="2"/>
+    <rect x="1010" y="988" width="160" height="34" rx="17" fill="#D97706"/>
+    <text x="1090" y="1010" text-anchor="middle" class="zoneBadge">Lab</text>
+    <text x="1026" y="1052" class="zoneTitle">LAB-ZONE</text>
+    <text x="1026" y="1084" class="body">172.16.29.1/24</text>
+
+    <g transform="translate(1288 972)">
+      <rect x="0" y="24" width="96" height="132" rx="8" fill="#F8FAFC" stroke="#64748B" stroke-width="3"/>
+      <rect x="18" y="40" width="60" height="9" rx="3" fill="#CBD5E1"/>
+      <rect x="18" y="58" width="60" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="18" y="74" width="60" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="18" y="90" width="60" height="6" rx="3" fill="#E2E8F0"/>
+      <rect x="18" y="106" width="60" height="6" rx="3" fill="#E2E8F0"/>
+      <text x="48" y="174" text-anchor="middle" class="body">Lab Server</text>
+    </g>
+  </g>
+  </g>
+</svg>
