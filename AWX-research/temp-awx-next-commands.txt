@@ -1,0 +1,11 @@
+kubectl -n awx describe awx awx-demo
+kubectl -n awx get pods -o wide
+kubectl -n awx get events --sort-by='.lastTimestamp'
+kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager --tail=400
+kubectl -n awx get pods -w
+kubectl -n awx get secret awx-demo-admin-password -o jsonpath='{.data.password}' | base64 --decode; echo
+
+kubectl -n awx annotate awx awx-demo awx.ansible.com/reconcile="$(date +%s)" --overwrite
+kubectl -n awx get awx awx-demo -o yaml
+kubectl -n awx get pods -w
+kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f
