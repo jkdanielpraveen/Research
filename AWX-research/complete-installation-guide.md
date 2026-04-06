@@ -7,7 +7,7 @@ Goal: after running the commands below (no interactive choices, no manual secret
 What we learned during the actual lab run:
 - The operator deployment initially failed because one sidecar image referenced `gcr.io/kubebuilder/kube-rbac-proxy:v0.15.0`; replacing it with `quay.io/brancz/kube-rbac-proxy:v0.21.2` fixed the rollout.
 - AWX reconciliation did not complete until `metrics-server` became healthy and `v1beta1.metrics.k8s.io` reported `Available=True`.
-- On this Rocky Linux host, disabling `firewalld` was the fastest way to let metrics-server reach kubelet on port `10250`.
+- On this Rocky Linux host, `firewalld` blocked metrics-server from reaching kubelet on port `10250`. The correct fix is to open the required k3s ports and patch metrics-server with `--kubelet-insecure-tls` (k3s uses a self-signed cert for kubelet).
 - After metrics-server recovered, the AWX CR needed a manual reconcile annotation before the operator created the task/web pods and the admin password secret.
 
 Files created by the commands: `$HOME/awx-install/kustomization.yaml` and `$HOME/awx-install/awx-demo.yml`.
@@ -68,9 +68,16 @@ KUSTOM
 # 4) Apply the awx-operator (this creates CRDs and the operator deployment)
 kubectl apply -k .
 
-# If the operator pod fails because kube-rbac-proxy points at a dead gcr.io image,
-# patch the controller-manager deployment and replace the kube-rbac-proxy image with:
-# quay.io/brancz/kube-rbac-proxy:v0.21.2
+# The upstream kustomize manifest references gcr.io/kubebuilder/kube-rbac-proxy:v0.15.0
+# which is no longer reachable.  Patch it immediately so the rollout never stalls.
+echo "Patching kube-rbac-proxy image to a working mirror..."
+kubectl -n awx patch deployment awx-operator-controller-manager --type='json' -p='[
+  {
+    "op": "replace",
+    "path": "/spec/template/spec/containers/0/image",
+    "value": "quay.io/brancz/kube-rbac-proxy:v0.21.2"
+  }
+]'
 
 echo "Waiting for awx-operator deployment to be available..."
 kubectl -n awx rollout status deployment/awx-operator-controller-manager --timeout=300s
@@ -90,154 +97,116 @@ spec:
 AWXCR
 
 kubectl apply -f awx-demo.yml -n awx
-
-# 6) Wait for AWX pods to be created and reach Running
-echo "Waiting for awx-demo pods to reach Running state (this can take several minutes)..."
-MAX_WAIT=900
-SLEEP=10
-ELAPSED=0
-while [ $ELAPSED -lt $MAX_WAIT ]; do
-  if kubectl get pods -n awx | awk '/^awx-demo/ && $3=="Running" {exit 0} END{exit 1}'; then
-    echo "awx-demo pod is Running"
-    break
-  fi
-  sleep $SLEEP
-  ELAPSED=$((ELAPSED+SLEEP))
-  printf '.'
-done
-
-if [ $ELAPSED -ge $MAX_WAIT ]; then
-  echo
-  echo "Timeout waiting for awx-demo pods. Check operator logs:" >&2
-  echo "  kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager --tail=200" >&2
-  exit 2
-fi
-
-# 7) Get NodePort and print UI URL
-NODE_PORT=$(kubectl get svc -n awx awx-demo-service -o jsonpath='{.spec.ports[0].nodePort}') || true
-if [ -z "$NODE_PORT" ]; then
-  echo "Could not find awx-demo-service NodePort yet. Listing services:";
-  kubectl get svc -n awx
-  exit 3
-fi
-
-# Determine node IP (first non-loopback address)
-NODE_IP=$(hostname -I 2>/dev/null | awk '{print $1}' || true)
-if [ -z "$NODE_IP" ]; then
-  NODE_IP=$(kubectl get nodes -o jsonpath='{.items[0].status.addresses[?(@.type=="InternalIP")].address}')
-fi
-
-echo
-echo "AWX Web UI should be available at: http://${NODE_IP}:${NODE_PORT}"
-echo "Default admin user: admin"
-echo "To retrieve the auto-generated admin password run:" 
-echo "  kubectl get secret awx-demo-admin-password -n awx -o jsonpath=\"{.data.password}\" | base64 --decode ; echo"
-
-echo
-echo "If the UI is not reachable, view operator logs and AWX CR status:" 
-echo "  kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f"
-echo "  kubectl get awx awx-demo -n awx -o yaml"
-
-echo "Install finished (script end)"
 ```
 
-If the operator gets stuck again after `metrics-server` is healthy, force a fresh reconcile and watch the pods/logs with these exact commands:
+## Step 6 — Fix firewalld so metrics-server can reach kubelet
+
+On Rocky Linux, `firewalld` blocks port `10250` which metrics-server needs to reach the kubelet. Run these commands to open the required k3s ports (keeps firewalld running):
 
 ```bash
-kubectl -n awx annotate awx awx-demo awx.ansible.com/reconcile="$(date +%s)" --overwrite
-kubectl -n awx get awx awx-demo -o yaml
-kubectl -n awx get pods -w
-kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f
-```
-
-When AWX finishes, the password secret is the admin password for the AWX UI:
-
-```bash
-kubectl -n awx get secret awx-demo-admin-password -o jsonpath='{.data.password}' | base64 --decode; echo
-```
-
-The AWX web URL is the Node IP plus the `awx-demo-service` NodePort. On the lab host this resolved to:
-
-```bash
-http://192.168.29.199:30153
-```
-
-If you need to derive the URL on another host, use:
-
-```bash
-NODE_PORT=$(kubectl -n awx get svc awx-demo-service -o jsonpath='{.spec.ports[0].nodePort}')
-NODE_IP=$(hostname -I 2>/dev/null | awk '{print $1}')
-echo "http://${NODE_IP}:${NODE_PORT}"
-```
-
-Notes & troubleshooting (quick):
-- If the install hangs, check operator logs (above) and `kubectl get events -n awx --sort-by='.lastTimestamp'`.
-- If CRDs existed from a prior different operator version, delete them and reapply the pinned `2.10.0` kustomize resources.
-- For production, do not use k3s single-node and provide external Postgres; this script is for a single-server non-HA install.
-
-If `metrics.k8s.io/v1beta1` is `False (MissingEndpoints)` and `metrics-server` is stuck at `0/1`, run these exact commands:
-
-```bash
-kubectl -n kube-system describe pod metrics-server-c8774f4f4-c626s
-kubectl -n kube-system logs pod/metrics-server-c8774f4f4-c626s --tail=200
-kubectl -n kube-system get events --sort-by='.lastTimestamp'
-kubectl -n kube-system get deployment metrics-server -o yaml | sed -n '/containers:/,/volumes:/p'
-```
-
-If the metrics-server logs show kubelet TLS or certificate errors, or if it cannot reach kubelet on `10250`, patch the deployment with these exact arguments:
-
-```bash
-kubectl -n kube-system edit deployment metrics-server
-```
-
-Add these lines under the `metrics-server` container `args:` list:
-
-```yaml
-- --kubelet-insecure-tls
-- --kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname
-```
-
-Then run:
-
-```bash
-kubectl -n kube-system rollout status deployment/metrics-server --timeout=180s
-kubectl get apiservice v1beta1.metrics.k8s.io
-```
-
-If metrics-server still logs `no route to host` for `https://<node-ip>:10250/metrics/resource`, open the kubelet port on the Rocky host or disable firewalld for the lab install:
-
-```bash
-sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --zone=trusted --add-interface=flannel.1
+sudo firewall-cmd --permanent --zone=trusted --add-interface=cni0
 sudo firewall-cmd --permanent --add-port=6443/tcp
+sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --add-port=30000-32767/tcp
 sudo firewall-cmd --reload
 ```
 
-If you want the simplest lab setup, disable firewalld entirely before retrying:
+## Step 7 — Patch metrics-server for k3s self-signed kubelet certs
+
+k3s uses a self-signed cert for kubelet. metrics-server will refuse it unless patched:
 
 ```bash
-sudo systemctl disable firewalld --now
+kubectl -n kube-system patch deployment metrics-server --type='json' -p='[
+  {"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"},
+  {"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname"}
+]'
 ```
 
-After that, force a reconcile and then run these exact commands:
+Verify metrics-server becomes healthy:
+
+```bash
+kubectl -n kube-system rollout status deployment/metrics-server --timeout=120s
+kubectl get apiservice v1beta1.metrics.k8s.io
+```
+
+Wait until you see `Available=True`. The AWX operator will auto-retry once metrics-server is up.
+
+## Step 8 — Watch AWX pods come up
+
+```bash
+kubectl -n awx get pods -w
+```
+
+Wait for `awx-demo-web` and `awx-demo-task` to both show `Running`. This takes **5–15 minutes** (image pulls + Postgres init). Watch operator logs in parallel if you want to see progress:
+
+```bash
+kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f
+```
+
+## Step 9 — Get the admin password and URL
+
+```bash
+kubectl -n awx get secret awx-demo-admin-password -o jsonpath='{.data.password}' | base64 --decode; echo
+```
+
+```bash
+NODE_PORT=$(kubectl -n awx get svc awx-demo-service -o jsonpath='{.spec.ports[0].nodePort}')
+NODE_IP=$(hostname -I | awk '{print $1}')
+echo "http://${NODE_IP}:${NODE_PORT}"
+```
+
+Log in at the printed URL with username `admin` and the password from above.
+
+## Notes & troubleshooting
+
+- If the install hangs, check operator logs: `kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f`
+- Check events: `kubectl get events -n awx --sort-by='.lastTimestamp'`
+- If CRDs existed from a prior different operator version, delete them and reapply the pinned `2.10.0` kustomize resources.
+- For production, do not use k3s single-node and provide external Postgres; this guide is for a single-server non-HA install.
+
+### If the operator is stuck after metrics-server is healthy
+
+Force a fresh reconcile:
 
 ```bash
 kubectl -n awx annotate awx awx-demo awx.ansible.com/reconcile="$(date +%s)" --overwrite
-kubectl -n kube-system rollout status deployment/metrics-server --timeout=180s
-kubectl get apiservice v1beta1.metrics.k8s.io
-kubectl -n awx get awx
 kubectl -n awx get pods -w
-kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f
-kubectl -n awx get secret awx-demo-admin-password -o jsonpath='{.data.password}' | base64 --decode; echo
 ```
 
-If the AWX custom resource is present and you want to watch reconciliation after metrics-server is fixed:
+### If metrics-server is stuck at `0/1` / `v1beta1.metrics.k8s.io` is `False`
+
+Check what it's complaining about:
 
 ```bash
-kubectl -n awx get awx
-kubectl -n awx describe awx awx-demo
-kubectl -n awx get pods -w
-kubectl -n awx logs deployment/awx-operator-controller-manager -c awx-manager -f
-kubectl -n awx get secret awx-demo-admin-password -o jsonpath='{.data.password}' | base64 --decode; echo
+kubectl -n kube-system logs deployment/metrics-server --tail=30
+```
+
+**Fix 1 — firewalld blocking port 10250** (most common on Rocky Linux):
+
+```bash
+sudo firewall-cmd --permanent --zone=trusted --add-interface=flannel.1
+sudo firewall-cmd --permanent --zone=trusted --add-interface=cni0
+sudo firewall-cmd --permanent --add-port=6443/tcp
+sudo firewall-cmd --permanent --add-port=10250/tcp
+sudo firewall-cmd --permanent --add-port=30000-32767/tcp
+sudo firewall-cmd --reload
+```
+
+**Fix 2 — kubelet TLS rejection** (k3s uses a self-signed cert metrics-server won't trust by default):
+
+```bash
+kubectl -n kube-system patch deployment metrics-server --type='json' -p='[
+  {"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-insecure-tls"},
+  {"op":"add","path":"/spec/template/spec/containers/0/args/-","value":"--kubelet-preferred-address-types=InternalIP,ExternalIP,Hostname"}
+]'
+```
+
+Both fixes are typically needed together. Verify after applying:
+
+```bash
+kubectl -n kube-system rollout status deployment/metrics-server --timeout=120s
+kubectl get apiservice v1beta1.metrics.k8s.io
 ```
 
 Saved files:
