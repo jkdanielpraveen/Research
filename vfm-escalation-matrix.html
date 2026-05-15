@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VFM Escalation Matrix</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f0f4f8;
+      --page-bg: #f0f4f8;
+      --card-bg: #ffffff;
+      --card-border: #d1dbe8;
+      --node-bg: linear-gradient(135deg, #1e4fd8 0%, #2563eb 100%);
+      --node-border: #1d4ed8;
+      --node-text: #ffffff;
+      --node-sub: rgba(255,255,255,0.88);
+      --node-detail: rgba(255,255,255,0.78);
+      --arrow: #2563eb;
+      --notes-bg: #f0fdf4;
+      --notes-border: #bbf7d0;
+      --notes-text: #14532d;
+      --title-bg: #eff6ff;
+      --title-border: #bfdbfe;
+      --title-text: #1e3a8a;
+      --accent: #2563eb;
+      --radius: 12px;
+    }
+
+    /* ── RESET ── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      min-height: 100vh;
+      background: var(--bg);
+      font-family: 'Poppins', system-ui, sans-serif;
+      color: #1e293b;
+    }
+
+    body {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    /* ── OUTER CARD ── */
+    .page {
+      width: 620px;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 22px 24px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    /* ── PAGE TITLE ── */
+    .page-title {
+      background: var(--title-bg);
+      border: 1px solid var(--title-border);
+      border-radius: 10px;
+      padding: 12px 18px;
+      text-align: center;
+    }
+
+    .page-title h1 {
+      font-family: 'Poppins', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+      color: var(--title-text);
+    }
+
+    .page-title .org {
+      color: #1d4ed8;
+    }
+
+    /* ── TOP ROW: L5 + L4 side by side ── */
+    .top-row {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      justify-content: center;
+    }
+
+    /* ── NODE ── */
+    .node {
+      background: var(--node-bg);
+      border: 2px solid var(--node-border);
+      border-radius: var(--radius);
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 200px;
+      max-width: 220px;
+    }
+
+    .node.wide {
+      min-width: 240px;
+      max-width: 260px;
+    }
+
+    .node-level {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 3px;
+    }
+
+    .node-role {
+      font-family: 'Poppins', sans-serif;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: #fff;
+      line-height: 1.2;
+      margin-bottom: 5px;
+    }
+
+    .node-name {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 6px;
+    }
+
+    .node-detail {
+      font-size: 0.65rem;
+      color: rgba(255,255,255,0.72);
+      line-height: 1.5;
+    }
+
+    .node-detail .label {
+      color: rgba(255,255,255,0.45);
+      font-weight: 500;
+    }
+
+    .node-detail a, .node-detail .email {
+      color: #bfdbfe;
+      font-weight: 500;
+      word-break: break-all;
+    }
+
+    /* ── BIDIRECTIONAL ARROW (L5 ↔ L4) ── */
+    .h-arrow {
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 0 4px;
+      max-width: 80px;
+    }
+
+    .h-arrow svg {
+      width: 100%;
+      height: 24px;
+    }
+
+    /* ── VERTICAL COLUMN (L3 → L2 → L1) ── */
+    .v-column {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+    }
+
+    /* ── UPWARD ARROW ── */
+    .v-arrow {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      padding: 2px 0;
+    }
+
+    .v-arrow svg {
+      width: 20px;
+      height: 28px;
+    }
+
+    /* ── CONNECTOR between top row and L3 ── */
+    .top-to-l3 {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2px 0;
+    }
+
+    .top-to-l3 svg {
+      width: 20px;
+      height: 24px;
+    }
+
+    /* ── NOTES BOX ── */
+    .notes-box {
+      background: var(--notes-bg);
+      border: 1px solid var(--notes-border);
+      border-radius: 10px;
+      padding: 14px 16px;
+    }
+
+    .notes-box ol {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 7px;
+    }
+
+    .notes-box li {
+      display: flex;
+      gap: 10px;
+      align-items: flex-start;
+      font-size: 0.7rem;
+      color: var(--notes-text);
+      line-height: 1.45;
+    }
+
+    .notes-box .n-num {
+      flex-shrink: 0;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: rgba(22,163,74,0.12);
+      border: 1px solid rgba(22,163,74,0.3);
+      color: #16a34a;
+      font-size: 0.6rem;
+      font-weight: 700;
+      display: grid;
+      place-items: center;
+      margin-top: 1px;
+    }
+
+    .notes-box strong {
+      color: #15803d;
+    }
+
+    @media print {
+      body { background: var(--bg); }
+    }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- TITLE -->
+  <div class="page-title">
+    <h1><span class="org">VFM Systems &amp; Services Pvt Ltd</span> | Escalation Matrix</h1>
+  </div>
+
+  <!-- TOP ROW: Level 5 ↔ Level 4 -->
+  <div class="top-row">
+    <article class="node" aria-label="Level 5">
+      <div class="node-level">Level 5</div>
+      <div class="node-role">Country Head Services</div>
+      <div class="node-name">Astik Mukherjee</div>
+      <div class="node-detail">
+        <span class="label">Email : </span><span class="email">astik@vfmindia.biz</span>
+      </div>
+    </article>
+
+    <div class="h-arrow" aria-hidden="true">
+      <svg viewBox="0 0 60 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="4" y1="12" x2="56" y2="12" stroke="#2563eb" stroke-width="2"/>
+        <polyline points="48,6 56,12 48,18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <polyline points="12,6 4,12 12,18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <article class="node" aria-label="Level 4">
+      <div class="node-level">Level 4</div>
+      <div class="node-role">Country Head Sales</div>
+      <div class="node-name">Girish Kumar</div>
+      <div class="node-detail">
+        <span class="label">Mobile : </span>9986837311<br>
+        <span class="label">Email : </span><span class="email">girish@vfmindia.biz</span>
+      </div>
+    </article>
+  </div>
+
+  <!-- CONNECTOR: top row → L3 -->
+  <div class="top-to-l3" aria-hidden="true">
+    <svg viewBox="0 0 20 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <line x1="10" y1="0" x2="10" y2="16" stroke="#2563eb" stroke-width="2"/>
+      <polyline points="4,8 10,16 16,8" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </div>
+
+  <!-- VERTICAL STACK: L3 → L2 → L1 -->
+  <div class="v-column">
+
+    <article class="node wide" aria-label="Level 3">
+      <div class="node-level">Level 3</div>
+      <div class="node-role">Technical Team Lead</div>
+      <div class="node-name">Naveen Kumar S</div>
+      <div class="node-detail">
+        <span class="label">Mobile : </span>8892414154<br>
+        <span class="label">Email : </span><span class="email">nkumar.s@vfmindia.biz</span>
+      </div>
+    </article>
+
+    <div class="v-arrow" aria-hidden="true">
+      <svg viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="28" x2="10" y2="10" stroke="#2563eb" stroke-width="2"/>
+        <polyline points="4,18 10,10 16,18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <article class="node wide" aria-label="Level 2">
+      <div class="node-level">Level 2</div>
+      <div class="node-role">Technical Support Experts</div>
+      <div class="node-name">Santhosh / Raghavendra</div>
+      <div class="node-detail">
+        <span class="label">Mobile : </span>6363527613 / 7760351953<br>
+        <span class="label">Email : </span><span class="email">santhosh@vfmindia.biz</span><br>
+        <span class="label">Email : </span><span class="email">raghavendra@vfmindia.biz</span>
+      </div>
+    </article>
+
+    <div class="v-arrow" aria-hidden="true">
+      <svg viewBox="0 0 20 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <line x1="10" y1="28" x2="10" y2="10" stroke="#2563eb" stroke-width="2"/>
+        <polyline points="4,18 10,10 16,18" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </div>
+
+    <article class="node wide" aria-label="Level 1">
+      <div class="node-level">Level 1</div>
+      <div class="node-role">Technical Support Engineers</div>
+      <div class="node-name">First-line support intake</div>
+      <div class="node-detail">
+        <span class="label">Email : </span><span class="email">vfmsupport@vfmindia.biz</span><br>
+        <span class="label">Engineers : </span>Vishwas / Yaseen / Ajit
+      </div>
+    </article>
+
+  </div>
+
+  <!-- SUPPORT NOTES -->
+  <div class="notes-box">
+    <ol>
+      <li>
+        <span class="n-num">1</span>
+        <span>Always send an email to <strong>vfmsupport@vfmindia.biz</strong> for any kind of support and faster response.</span>
+      </li>
+      <li>
+        <span class="n-num">2</span>
+        <span>Please follow the escalation matrix shown above for any escalations.</span>
+      </li>
+      <li>
+        <span class="n-num">3</span>
+        <span>For any new configuration assistance or use case requirements, request to send an email with the detailed requirement at least <strong>1 to 2 days</strong> before the deadline.</span>
+      </li>
+      <li>
+        <span class="n-num">4</span>
+        <span>Weekends are holidays so only limited support will be available for critical/planned activities. For any Break-Fix support calls, please log a case with <strong>Palo Alto</strong> via support portal on weekends.</span>
+      </li>
+    </ol>
+  </div>
+
+</div>
+</body>
+</html>
